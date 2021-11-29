@@ -1,37 +1,24 @@
-import { ContractId, getErcContract, getPairContract } from "./AddressBook";
+import { ContractId } from "./AddressBook";
 import { BigNumber } from "ethers";
-import { swap } from "./Swapper";
+import { getErcContract, getPairContract } from "./Utilities";
+import { ContractIsh } from "./GenericTypes";
+import { loadToken } from "./Erc20Utilities";
 
-export enum Denominator {
-  first,
-  second,
-}
+export type PriceCallback = (price: number) => void;
 
 export const watchPrice = async (
   id: ContractId,
-  denominator: Denominator = Denominator.first
+  main: ContractIsh,
+  callback: PriceCallback = () => null
 ) => {
   const lp = getPairContract(id);
   const token0Addr = await lp.token0();
   const token1Addr = await lp.token1();
-  const token0 = getErcContract(token0Addr);
-  const token1 = getErcContract(token1Addr);
+  const token0 = await loadToken(token0Addr);
+  const token1 = await loadToken(token1Addr);
+  const mainToken = await loadToken(main);
 
-  const sym0 = await token0.symbol();
-  const sym1 = await token1.symbol();
-
-  const dec0 = await token0.decimals();
-  const dec1 = await token1.decimals();
-
-  const name0 = await token0.name();
-  const name1 = await token1.name();
-  console.log(`watching the ${name0}-${name1} pair`);
-
-  const convertToFloat = (amount: BigNumber, dec: number) => {
-    const a = Math.floor(dec / 2);
-    const b = dec - a;
-    return amount.div(Math.pow(10, a)).toNumber() / Math.pow(10, b);
-  };
+  console.log(`watching the ${token0.name}/${token1.name} pair`);
 
   lp.on(
     "Swap",
@@ -43,24 +30,22 @@ export const watchPrice = async (
       out1: BigNumber
     ) => {
       const first = in0.isZero()
-        ? convertToFloat(out0, dec0)
-        : convertToFloat(in0, dec0);
+        ? token0.fromBigNumber(out0)
+        : token0.fromBigNumber(in0);
       const second = in0.isZero()
-        ? convertToFloat(in1, dec1)
-        : convertToFloat(out1, dec1);
+        ? token1.fromBigNumber(in1)
+        : token1.fromBigNumber(out1);
       const price =
-        denominator === Denominator.first ? first / second : second / first;
+        mainToken.address === token0.address ? second / first : first / second;
 
       if (in0.isZero()) {
-        console.log(`${second} ${sym1} => ${first} ${sym0}`);
+        console.log(`${second} ${token1.symbol} => ${first} ${token0.symbol}`);
       } else {
-        console.log(`${first} ${sym0} => ${second} ${sym1}`);
+        console.log(`${first} ${token0.symbol} => ${second} ${token1.symbol}`);
       }
+
       console.log("price", price);
-      if (first > 1e6 || price > 4e3) {
-        console.log("SOMEONE JUST MADE A BIGASS TRANSACTION!!!", first);
-        swap();
-      }
+      callback(price);
     }
   );
 };

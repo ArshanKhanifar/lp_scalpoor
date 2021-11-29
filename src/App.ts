@@ -1,15 +1,18 @@
 import { config } from "dotenv";
-import { ContractId, setup } from "./AddressBook";
-import { watchPrice } from "./PriceWatchoor";
+import { setup } from "./Config";
+import { scalpEth } from "./scalps/eth_scalp";
 
 config();
 setup();
 
 async function main() {
-  await watchPrice(ContractId.AROME_FRAX);
+  scalpEth();
 }
 
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+
+
+

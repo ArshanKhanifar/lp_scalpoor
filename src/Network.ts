@@ -23,4 +23,5 @@ export const setNetwork = (network: Network) => {
 export const RPCAddressBook: AddressBookType = {
   [Network.AVAX]: "https://api.avax.network/ext/bc/C/rpc",
   [Network.MOONRIVER]: "https://rpc.moonriver.moonbeam.network",
+  [Network.FANTOM]: "https://rpc.ftm.tools",
 };
