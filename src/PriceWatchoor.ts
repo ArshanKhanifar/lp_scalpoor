@@ -43,8 +43,6 @@ export const watchPrice = async (
       } else {
         console.log(`${first} ${token0.symbol} => ${second} ${token1.symbol}`);
       }
-
-      console.log("price", price);
       callback(price);
     }
   );

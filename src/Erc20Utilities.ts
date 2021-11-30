@@ -1,6 +1,6 @@
 import { ContractId, getAddress } from "./AddressBook";
 import { getErcContract, pow } from "./Utilities";
-import { BigNumber } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import { ContractIsh, Lookup } from "./GenericTypes";
 
 export class ERC20Token {
@@ -8,21 +8,25 @@ export class ERC20Token {
   name: string;
   decimals: number;
   symbol: string;
+  contract: Contract;
   constructor({
     address,
     symbol,
     name,
     decimals,
+    contract,
   }: {
     address: string;
     symbol: string;
     name: string;
     decimals: number;
+    contract: Contract;
   }) {
     this.address = address;
     this.name = name;
     this.decimals = decimals;
     this.symbol = symbol;
+    this.contract = contract;
   }
 
   toBigNumber(amount: number) {
@@ -38,9 +42,7 @@ export class ERC20Token {
   fromBigNumber(amountBn: BigNumber) {
     const significantDigits = 6;
     const rest = this.decimals - significantDigits;
-    return (
-      amountBn.div(pow(rest)).toNumber() / Math.pow(10, significantDigits)
-    );
+    return amountBn.div(pow(rest)).toNumber() / Math.pow(10, significantDigits);
   }
 }
 
@@ -51,11 +53,11 @@ export const loadToken = async (id: ContractIsh): Promise<ERC20Token> => {
   if (loadedTokens[address]) {
     return loadedTokens[address];
   }
-  const erc20Contract = getErcContract(id);
-  const name = await erc20Contract.name();
-  const symbol = await erc20Contract.symbol();
-  const decimals = await erc20Contract.decimals();
-  const token = new ERC20Token({ address, name, symbol, decimals });
+  const contract = getErcContract(id);
+  const name = await contract.name();
+  const symbol = await contract.symbol();
+  const decimals = await contract.decimals();
+  const token = new ERC20Token({ address, name, symbol, decimals, contract });
   loadedTokens[address] = token;
   return token;
 };

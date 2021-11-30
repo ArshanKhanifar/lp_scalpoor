@@ -1,18 +1,15 @@
 import { config } from "dotenv";
 import { setup } from "./Config";
-import { scalpEth } from "./scalps/eth_scalp";
+import { scalpBeans } from "./scalps/BeansScalpoor";
 
 config();
 setup();
 
 async function main() {
-  scalpEth();
+  scalpBeans();
 }
 
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
-
-
-

@@ -20,6 +20,7 @@ export enum ContractId {
   WFTM,
   WFTM_MIM,
   WFTM_ETH,
+  UNI_ROUTER
 }
 
 const NetworkAddressBook: NetworkAddressBookType = {
@@ -29,6 +30,7 @@ const NetworkAddressBook: NetworkAddressBookType = {
     [ContractId.WETH_BEAN]: "0x87898263b6c5babe34b4ec53f22d98430b91e371",
     [ContractId.USDC]: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     [ContractId.WETH_USDC]: "0x397ff1542f962076d0bfe58ea045ffa2d347aca0",
+    [ContractId.UNI_ROUTER]: "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
   },
   [Network.MOONRIVER]: {
     [ContractId.AROME]: "0x3D2D044E8C6dAd46b4F7896418d3d4DFaAD902bE",

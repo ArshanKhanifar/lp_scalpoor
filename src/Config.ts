@@ -2,7 +2,7 @@ import { globalContext, Network, RPCAddressBook, setNetwork } from "./Network";
 import { ethers, Wallet } from "ethers";
 
 export const setup = () => {
-  setNetwork(Network.FANTOM);
+  setNetwork(Network.ETHEREUM);
 };
 
 export const getProvider = () =>
