@@ -63,6 +63,7 @@ export const swap = async (
     deadline,
     overrides
   );
+  console.log('tx hash', tx.hash);
   console.log(etherscanUrl(tx.hash));
   await tx.wait();
   console.log(`done`);

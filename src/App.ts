@@ -1,12 +1,12 @@
 import { config } from "dotenv";
 import { setup } from "./Config";
-import { scalpBeans } from "./scalps/BeansScalpoor";
+import { scalpBeans, States } from "./scalps/BeansScalpoor";
 
 config();
 setup();
 
 async function main() {
-  scalpBeans();
+  scalpBeans(States.BUY_BEANS);
 }
 
 main().catch((error) => {
