@@ -4,7 +4,7 @@
   "main": "src/App.ts",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/App.ts",
+    "start": "ts-node src/App.ts 2>&1 > bean.log",
     "watch": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/App.ts",
     "create": "npm run build && npm run test",
     "build": "tsc -p .",
