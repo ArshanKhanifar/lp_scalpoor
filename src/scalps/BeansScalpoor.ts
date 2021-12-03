@@ -93,8 +93,18 @@ export const buyBeans = async (beanPrice: number, amount: number = 0) => {
   }
 };
 
-export const scalpBeans = async (initialState: States) => {
+export const scalpBeans = async () => {
+  const beanBalance = await getBeanBalance();
+  const usdcBalance = await getUsdcBalance();
+  const initialState =
+    beanBalance > usdcBalance ? States.BUY_BEANS : States.SELL_BEANS;
+  console.log(
+    "Starting in the state: ",
+    initialState === States.BUY_BEANS ? "Buy" : "Sell"
+  );
+
   const fsm = new Fsm(initialState);
+  const [HIGH_PRICE, LOW_PRICE] = [1.03, 0.96];
 
   fsm.addState(States.SELL_BEANS, async (beanPrice) => {
     await sellBeans(beanPrice);
@@ -107,13 +117,13 @@ export const scalpBeans = async (initialState: States) => {
   fsm.addTransition(
     States.BUY_BEANS,
     States.SELL_BEANS,
-    (price: number) => price > 1.075
+    (price: number) => price > HIGH_PRICE
   );
 
   fsm.addTransition(
     States.SELL_BEANS,
     States.BUY_BEANS,
-    (price: number) => price < 1.01
+    (price: number) => price < LOW_PRICE
   );
 
   watchBeanPrice((beanPrice) => {

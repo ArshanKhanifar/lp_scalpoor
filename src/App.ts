@@ -6,7 +6,7 @@ config();
 setup();
 
 async function main() {
-  scalpBeans(States.BUY_BEANS);
+  scalpBeans();
 }
 
 main().catch((error) => {
