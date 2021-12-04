@@ -104,7 +104,7 @@ export const scalpBeans = async () => {
   );
 
   const fsm = new Fsm(initialState);
-  const [HIGH_PRICE, LOW_PRICE] = [1.03, 0.96];
+  const [HIGH_PRICE, LOW_PRICE] = [1.01, 0.91];
 
   fsm.addState(States.SELL_BEANS, async (beanPrice) => {
     await sellBeans(beanPrice);
